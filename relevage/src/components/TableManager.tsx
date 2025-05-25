@@ -130,6 +130,17 @@ const TableManager: React.FC = () => {
             newHeaders.splice(index, 0, `New Column ${index}`);
             return newHeaders;
         });
+    };
+
+    const handleAddColumnEnd = (clickedHeader: string) => {
+        setHeaders((prevHeaders) => {
+            const index = prevHeaders.indexOf(clickedHeader);
+            if (index === -1) return prevHeaders;
+
+            const newHeaders = [...prevHeaders];
+            newHeaders.splice(index + 1, 0, `New Column ${index + 1}`);
+            return newHeaders;
+        });
 
         setData((prevData) =>
             prevData.map((row) => {
@@ -314,7 +325,7 @@ const TableManager: React.FC = () => {
                                                 <button onClick={() => handleMoveColumn(header, 'left')}>←</button>
                                                 <button onClick={() => handleMoveColumn(header, 'right')}>→</button>
                                                 {index === headers.length - 1 && (
-                                                    <button onClick={() => handleAddColumn(header)}>+</button>
+                                                    <button onClick={() => handleAddColumnEnd(header)}>+</button>
                                                 )}
                                             </div>
                                         )}
