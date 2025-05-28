@@ -71,6 +71,12 @@ const TableManager: React.FC = () => {
         setData(updatedData);
     };
 
+    const toggleColumnVisibility = (header: string) => {
+        setHiddenColumns((prev) =>
+            prev.includes(header) ? prev.filter((col) => col !== header) : [...prev, header]
+        );
+    };
+
     // Met à jour le titre de la page dynamiquement
     useEffect(() => {
         if (fileName && selectedSheet) {
@@ -162,9 +168,7 @@ const TableManager: React.FC = () => {
                                     style={{ padding: '5px', border: '1px solid #ddd' }}
                                 />
                                 <button
-                                    onClick={() => setHiddenColumns((prev) =>
-                                        prev.includes(header) ? prev.filter((col) => col !== header) : [...prev, header]
-                                    )}
+                                    onClick={() => toggleColumnVisibility(header)}
                                     // style={{
                                     //     padding: '10px 20px',
                                     //     backgroundColor: '#007BFF',
@@ -193,44 +197,50 @@ const TableManager: React.FC = () => {
                     <table style={{ borderCollapse: 'collapse', width: '100%' }}>
                         <thead>
                             <tr>
-                                {headers.map((header) => (
-                                    <th
-                                        key={header}
-                                        style={{
-                                            border: '1px solid #ddd',
-                                            padding: '8px',
-                                            textAlign: 'left',
-                                            backgroundColor: columnColors[header] || 'transparent',
-                                        }}
-                                    >
-                                        {header}
-                                    </th>
-                                ))}
+                                {headers.map(
+                                    (header) =>
+                                        !hiddenColumns.includes(header) && (
+                                            <th
+                                                key={header}
+                                                style={{
+                                                    border: '1px solid #ddd',
+                                                    padding: '8px',
+                                                    textAlign: 'left',
+                                                    backgroundColor: columnColors[header] || 'transparent',
+                                                }}
+                                            >
+                                                {header}
+                                            </th>
+                                        )
+                                )}
                             </tr>
                         </thead>
                         <tbody>
                             {data.map((row, rowIndex) => (
                                 <tr key={rowIndex}>
-                                    {headers.map((header) => (
-                                        <td
-                                            key={header}
-                                            style={{
-                                                border: '1px solid #ddd',
-                                                padding: '8px',
-                                                backgroundColor: columnColors[header] || 'transparent',
-                                            }}
-                                        >
-                                            <input
-                                                type="text"
-                                                value={row[header] || ''}
-                                                onChange={(e) => {
-                                                    const newData = [...data];
-                                                    newData[rowIndex][header] = e.target.value;
-                                                    setData(newData);
-                                                }}
-                                            />
-                                        </td>
-                                    ))}
+                                    {headers.map(
+                                        (header) =>
+                                            !hiddenColumns.includes(header) && (
+                                                <td
+                                                    key={header}
+                                                    style={{
+                                                        border: '1px solid #ddd',
+                                                        padding: '8px',
+                                                        backgroundColor: columnColors[header] || 'transparent',
+                                                    }}
+                                                >
+                                                    <input
+                                                        type="text"
+                                                        value={row[header] || ''}
+                                                        onChange={(e) => {
+                                                            const newData = [...data];
+                                                            newData[rowIndex][header] = e.target.value;
+                                                            setData(newData);
+                                                        }}
+                                                    />
+                                                </td>
+                                            )
+                                    )}
                                 </tr>
                             ))}
                         </tbody>
