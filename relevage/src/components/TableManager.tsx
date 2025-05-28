@@ -10,6 +10,7 @@ const TableManager: React.FC = () => {
     const [selectedSheet, setSelectedSheet] = useState<string>(''); // Feuille sélectionnée
     const [hiddenColumns, setHiddenColumns] = useState<string[]>([]); // Colonnes masquées
     const [columnColors, setColumnColors] = useState<{ [key: string]: string }>({}); // Couleurs des colonnes
+    const [columnSortOrder, setColumnSortOrder] = useState<{ [key: string]: 'asc' | 'desc' }>({}); // Ordre de tri des colonnes
 
     const [showSheets, setShowSheets] = useState<boolean>(true); // Afficher/Masquer les feuilles disponibles
     const [showColumnActions, setShowColumnActions] = useState<boolean>(true); // Afficher/Masquer les actions sur les colonnes
@@ -75,6 +76,23 @@ const TableManager: React.FC = () => {
         setHiddenColumns((prev) =>
             prev.includes(header) ? prev.filter((col) => col !== header) : [...prev, header]
         );
+    };
+
+    const toggleColumnSortOrder = (header: string) => {
+        const currentOrder = columnSortOrder[header] || 'asc';
+        const newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+
+        setColumnSortOrder((prev) => ({ ...prev, [header]: newOrder }));
+
+        const sortedData = [...data].sort((a, b) => {
+            if (newOrder === 'asc') {
+                return (a[header] || '').localeCompare(b[header] || '');
+            } else {
+                return (b[header] || '').localeCompare(a[header] || '');
+            }
+        });
+
+        setData(sortedData);
     };
 
     // Met à jour le titre de la page dynamiquement
@@ -185,6 +203,19 @@ const TableManager: React.FC = () => {
                                     onChange={(e) => setColumnColors((prev) => ({ ...prev, [header]: e.target.value }))}
                                     value={columnColors[header] || '#ffffff'}
                                 />
+{/*                                <button
+                                    onClick={() => toggleColumnSortOrder(header)}
+                                    // style={{
+                                    //     padding: '10px 20px',
+                                    //     backgroundColor: '#007BFF',
+                                    //     color: 'white',
+                                    //     border: 'none',
+                                    //     borderRadius: '5px',
+                                    //     cursor: 'pointer',
+                                    // }}
+                                >
+                                    {columnSortOrder[header] === 'asc' ? 'Trier décroissant' : 'Trier croissant'}
+                                </button> */}
                             </div>
                         ))}
                     </div>
@@ -209,7 +240,22 @@ const TableManager: React.FC = () => {
                                                     backgroundColor: columnColors[header] || 'transparent',
                                                 }}
                                             >
-                                                {header}
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                                    {header}
+                                                    <button
+                                                        onClick={() => toggleColumnSortOrder(header)}
+                                                        style={{
+                                                            padding: '5px',
+                                                            backgroundColor: '#007BFF',
+                                                            color: 'white',
+                                                            border: 'none',
+                                                            borderRadius: '3px',
+                                                            cursor: 'pointer',
+                                                        }}
+                                                    >
+                                                        {columnSortOrder[header] === 'asc' ? '↓' : '↑'}
+                                                    </button>
+                                                </div>
                                             </th>
                                         )
                                 )}
