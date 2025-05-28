@@ -48,6 +48,7 @@ const TableManager: React.FC = () => {
             setData(sheetData);
             setHeaders(Object.keys(sheetData[0])); // Récupère les en-têtes
             setSelectedSheet(sheetName); // Met à jour la feuille sélectionnée
+            setShowSheets(false); // Masque les feuilles disponibles
         } catch (err) {
             setError('Erreur lors de la sélection de la feuille.');
             console.error(err);
