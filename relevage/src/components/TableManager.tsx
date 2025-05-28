@@ -202,17 +202,30 @@ const TableManager: React.FC = () => {
                                                     border: '1px solid #ddd',
                                                     padding: '8px',
                                                     textAlign: 'left',
-                                                    backgroundColor: columnColors[header] || 'transparent',
+                                                    backgroundColor: columnColors[header] || 'transparent', // Applique la couleur uniquement au header
                                                 }}
                                             >
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                                                     {header}
                                                     <button
                                                         onClick={() => toggleColumnSortOrder(header)}
-
+                                                        style={{
+                                                            padding: '5px',
+                                                            backgroundColor: '#007BFF',
+                                                            color: 'white',
+                                                            border: 'none',
+                                                            borderRadius: '3px',
+                                                            cursor: 'pointer',
+                                                        }}
                                                     >
                                                         {columnSortOrder[header] === 'asc' ? '↓' : '↑'}
                                                     </button>
+                                                    <input
+                                                        type="color"
+                                                        onChange={(e) => setColumnColors((prev) => ({ ...prev, [header]: e.target.value }))}
+                                                        value={columnColors[header] || '#ffffff'}
+                                                        style={{ cursor: 'pointer' }}
+                                                    />
                                                 </div>
                                             </th>
                                         )
