@@ -12,6 +12,7 @@ const TableManager: React.FC = () => {
     const [columnColors, setColumnColors] = useState<{ [key: string]: string }>({}); // Couleurs des colonnes
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const inputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({}); // Références pour les champs d'édition des colonnes
 
     // Fonction pour extraire le nom du fichier sans extension
     const extractFileName = (file: File): string => {
@@ -99,6 +100,11 @@ const TableManager: React.FC = () => {
 
         setHeaders(newHeaders);
         setData(newData);
+
+        // Rétablit le focus sur le champ d'édition
+        setTimeout(() => {
+            inputRefs.current[newName]?.focus();
+        }, 0);
     };
 
     return (
@@ -147,6 +153,7 @@ const TableManager: React.FC = () => {
                                     type="text"
                                     value={header}
                                     onChange={(e) => editColumnName(index, e.target.value)}
+                                    ref={(el) => { inputRefs.current[header] = el; }}
                                     style={{ padding: '5px', border: '1px solid #ddd' }}
                                 />
                                 <button onClick={() => toggleColumnVisibility(header)}>
