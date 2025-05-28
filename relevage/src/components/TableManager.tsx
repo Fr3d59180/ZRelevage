@@ -54,6 +54,23 @@ const TableManager: React.FC = () => {
         }
     };
 
+    const handleColumnNameChange = (index: number, newName: string) => {
+        const oldName = headers[index];
+        const newHeaders = [...headers];
+        newHeaders[index] = newName;
+
+        // Met à jour les clés des objets dans `data`
+        const updatedData = data.map((row) => {
+            const updatedRow = { ...row };
+            updatedRow[newName] = updatedRow[oldName];
+            delete updatedRow[oldName];
+            return updatedRow;
+        });
+
+        setHeaders(newHeaders);
+        setData(updatedData);
+    };
+
     // Met à jour le titre de la page dynamiquement
     useEffect(() => {
         if (fileName && selectedSheet) {
@@ -141,11 +158,7 @@ const TableManager: React.FC = () => {
                                 <input
                                     type="text"
                                     value={header}
-                                    onChange={(e) => {
-                                        const newHeaders = [...headers];
-                                        newHeaders[index] = e.target.value;
-                                        setHeaders(newHeaders);
-                                    }}
+                                    onChange={(e) => handleColumnNameChange(index, e.target.value)}
                                     style={{ padding: '5px', border: '1px solid #ddd' }}
                                 />
                                 <button
