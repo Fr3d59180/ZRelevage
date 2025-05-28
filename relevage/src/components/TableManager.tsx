@@ -11,6 +11,9 @@ const TableManager: React.FC = () => {
     const [hiddenColumns, setHiddenColumns] = useState<string[]>([]); // Colonnes masquées
     const [columnColors, setColumnColors] = useState<{ [key: string]: string }>({}); // Couleurs des colonnes
 
+    const [showSheets, setShowSheets] = useState<boolean>(true); // Afficher/Masquer les feuilles disponibles
+    const [showColumnActions, setShowColumnActions] = useState<boolean>(true); // Afficher/Masquer les actions sur les colonnes
+
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const inputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({}); // Références pour les champs d'édition des colonnes
 
@@ -109,16 +112,23 @@ const TableManager: React.FC = () => {
 
     return (
         <div style={{ padding: '20px' }}>
-            <input
-                type="file"
-                accept=".xlsx, .xls"
-                onChange={handleFileUpload}
-                ref={fileInputRef}
-                style={{ marginBottom: '20px' }}
-            />
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+                <input
+                    type="file"
+                    accept=".xlsx, .xls"
+                    onChange={handleFileUpload}
+                    ref={fileInputRef}
+                    style={{ padding: '5px' }}
+                />
+                <button onClick={() => setShowSheets((prev) => !prev)}>
+                    {showSheets ? 'Masquer les feuilles disponibles' : 'Afficher les feuilles disponibles'}
+                </button>
+                <button onClick={() => setShowColumnActions((prev) => !prev)}>
+                    {showColumnActions ? 'Masquer les actions sur les colonnes' : 'Afficher les actions sur les colonnes'}
+                </button>
+            </div>
 
-            {sheetNames.length > 0 && (
+            {showSheets && sheetNames.length > 0 && (
                 <div style={{ marginTop: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <h2 style={{ margin: 0 }}>Feuilles disponibles :</h2>
                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'nowrap', overflowX: 'auto' }}>
@@ -143,7 +153,7 @@ const TableManager: React.FC = () => {
                 </div>
             )}
 
-            {headers.length > 0 && (
+            {showColumnActions && headers.length > 0 && (
                 <div style={{ marginTop: '20px' }}>
                     <h3 style={{ margin: 0 }}>Colonnes :</h3>
                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
