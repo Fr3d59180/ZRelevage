@@ -11,6 +11,7 @@ const TableManager: React.FC = () => {
     const [hiddenColumns, setHiddenColumns] = useState<string[]>([]); // Colonnes masquées
     const [columnColors, setColumnColors] = useState<{ [key: string]: string }>({}); // Couleurs des colonnes
     const [columnSortOrder, setColumnSortOrder] = useState<{ [key: string]: 'asc' | 'desc' }>({}); // Ordre de tri des colonnes
+    const [isSorting, setIsSorting] = useState(false); // État de tri
 
     const [showSheets, setShowSheets] = useState<boolean>(true); // Afficher/Masquer les feuilles disponibles
     const [showColumnActions, setShowColumnActions] = useState<boolean>(true); // Afficher/Masquer les actions sur les colonnes
@@ -85,10 +86,15 @@ const TableManager: React.FC = () => {
         setColumnSortOrder((prev) => ({ ...prev, [header]: newOrder }));
 
         const sortedData = [...data].sort((a, b) => {
-            if (newOrder === 'asc') {
-                return (a[header] || '').localeCompare(b[header] || '');
+            const valueA = a[header] || '';
+            const valueB = b[header] || '';
+
+            if (typeof valueA === 'number' && typeof valueB === 'number') {
+                return newOrder === 'asc' ? valueA - valueB : valueB - valueA;
             } else {
-                return (b[header] || '').localeCompare(a[header] || '');
+                return newOrder === 'asc'
+                    ? String(valueA).localeCompare(String(valueB))
+                    : String(valueB).localeCompare(String(valueA));
             }
         });
 
@@ -243,6 +249,7 @@ const TableManager: React.FC = () => {
                             ))}
                         </tbody>
                     </table>
+                    {isSorting && <p>Tri en cours...</p>}
                 </div>
             )}
         </div>
