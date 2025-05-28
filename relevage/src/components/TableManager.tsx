@@ -101,7 +101,7 @@ const TableManager: React.FC = () => {
                 {selectedSheet && (
                     <button
                         onClick={() => setShowSheets((prev) => !prev)}
-                        // style={{
+                        /// style={{
                         //     padding: '10px 20px',
                         //     backgroundColor: '#007BFF',
                         //     color: 'white',
