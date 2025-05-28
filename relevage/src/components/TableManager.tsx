@@ -121,10 +121,10 @@ const TableManager: React.FC = () => {
                     style={{ padding: '5px' }}
                 />
                 <button onClick={() => setShowSheets((prev) => !prev)}>
-                    {showSheets ? 'Masquer les feuilles disponibles' : 'Afficher les feuilles disponibles'}
+                    {showSheets ? 'Masquer les feuilles' : 'Afficher les feuilles'}
                 </button>
                 <button onClick={() => setShowColumnActions((prev) => !prev)}>
-                    {showColumnActions ? 'Masquer les actions sur les colonnes' : 'Afficher les actions sur les colonnes'}
+                    {showColumnActions ? 'Masquer les actions' : 'Afficher les actions'}
                 </button>
             </div>
 
