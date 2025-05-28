@@ -15,7 +15,6 @@ const TableManager: React.FC = () => {
     const [showColumnActions, setShowColumnActions] = useState<boolean>(true); // Afficher/Masquer les actions sur les colonnes
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const inputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({}); // Références pour les champs d'édition des colonnes
 
     // Fonction pour extraire le nom du fichier sans extension
     const extractFileName = (file: File): string => {
@@ -66,51 +65,6 @@ const TableManager: React.FC = () => {
         }
     }, [fileName, selectedSheet]);
 
-    const toggleColumnVisibility = (header: string) => {
-        setHiddenColumns((prev) =>
-            prev.includes(header) ? prev.filter((col) => col !== header) : [...prev, header]
-        );
-    };
-
-    const changeColumnColor = (header: string, color: string) => {
-        setColumnColors((prev) => ({ ...prev, [header]: color }));
-    };
-
-    const moveColumn = (header: string, direction: 'left' | 'right') => {
-        const index = headers.indexOf(header);
-        if (index === -1) return;
-
-        const newHeaders = [...headers];
-        const targetIndex = direction === 'left' ? index - 1 : index + 1;
-
-        if (targetIndex >= 0 && targetIndex < headers.length) {
-            [newHeaders[index], newHeaders[targetIndex]] = [newHeaders[targetIndex], newHeaders[index]];
-            setHeaders(newHeaders);
-        }
-    };
-
-    const editColumnName = (index: number, newName: string) => {
-        const oldName = headers[index];
-        const newHeaders = [...headers];
-        newHeaders[index] = newName;
-
-        // Met à jour les clés des objets dans `data`
-        const newData = data.map((row) => {
-            const updatedRow = { ...row };
-            updatedRow[newName] = updatedRow[oldName];
-            delete updatedRow[oldName];
-            return updatedRow;
-        });
-
-        setHeaders(newHeaders);
-        setData(newData);
-
-        // Rétablit le focus sur le champ d'édition
-        setTimeout(() => {
-            inputRefs.current[newName]?.focus();
-        }, 0);
-    };
-
     return (
         <div style={{ padding: '20px' }}>
             <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
@@ -121,12 +75,36 @@ const TableManager: React.FC = () => {
                     ref={fileInputRef}
                     style={{ padding: '5px' }}
                 />
-                <button onClick={() => setShowSheets((prev) => !prev)}>
-                    {showSheets ? 'Masquer les feuilles' : 'Afficher les feuilles'}
-                </button>
-                <button onClick={() => setShowColumnActions((prev) => !prev)}>
-                    {showColumnActions ? 'Masquer les actions' : 'Afficher les actions'}
-                </button>
+                {selectedSheet && (
+                    <button
+                        onClick={() => setShowSheets((prev) => !prev)}
+                        // style={{
+                        //     padding: '10px 20px',
+                        //     backgroundColor: '#007BFF',
+                        //     color: 'white',
+                        //     border: 'none',
+                        //     borderRadius: '5px',
+                        //     cursor: 'pointer',
+                        // }}
+                    >
+                        {showSheets ? 'Masquer les feuilles' : 'Afficher les feuilles'}
+                    </button>
+                )}
+                {selectedSheet && (
+                    <button
+                        onClick={() => setShowColumnActions((prev) => !prev)}
+                        // style={{
+                        //     padding: '10px 20px',
+                        //     backgroundColor: '#007BFF',
+                        //     color: 'white',
+                        //     border: 'none',
+                        //     borderRadius: '5px',
+                        //     cursor: 'pointer',
+                        // }}
+                    >
+                        {showColumnActions ? 'Masquer les actions' : 'Afficher les actions'}
+                    </button>
+                )}
             </div>
 
             {showSheets && sheetNames.length > 0 && (
@@ -137,15 +115,15 @@ const TableManager: React.FC = () => {
                             <button
                                 key={sheetName}
                                 onClick={() => handleSheetSelect(sheetName)}
-                                style={{
-                                    padding: '10px 20px',
-                                    backgroundColor: '#007BFF',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '5px',
-                                    cursor: 'pointer',
-                                    whiteSpace: 'nowrap',
-                                }}
+                                // style={{
+                                //     padding: '10px 20px',
+                                //     backgroundColor: '#007BFF',
+                                //     color: 'white',
+                                //     border: 'none',
+                                //     borderRadius: '5px',
+                                //     cursor: 'pointer',
+                                //     whiteSpace: 'nowrap',
+                                // }}
                             >
                                 {sheetName}
                             </button>
@@ -163,20 +141,33 @@ const TableManager: React.FC = () => {
                                 <input
                                     type="text"
                                     value={header}
-                                    onChange={(e) => editColumnName(index, e.target.value)}
-                                    ref={(el) => { inputRefs.current[header] = el; }}
+                                    onChange={(e) => {
+                                        const newHeaders = [...headers];
+                                        newHeaders[index] = e.target.value;
+                                        setHeaders(newHeaders);
+                                    }}
                                     style={{ padding: '5px', border: '1px solid #ddd' }}
                                 />
-                                <button onClick={() => toggleColumnVisibility(header)}>
+                                <button
+                                    onClick={() => setHiddenColumns((prev) =>
+                                        prev.includes(header) ? prev.filter((col) => col !== header) : [...prev, header]
+                                    )}
+                                    // style={{
+                                    //     padding: '10px 20px',
+                                    //     backgroundColor: '#007BFF',
+                                    //     color: 'white',
+                                    //     border: 'none',
+                                    //     borderRadius: '5px',
+                                    //     cursor: 'pointer',
+                                    // }}
+                                >
                                     {hiddenColumns.includes(header) ? 'Afficher' : 'Masquer'}
                                 </button>
                                 <input
                                     type="color"
-                                    onChange={(e) => changeColumnColor(header, e.target.value)}
+                                    onChange={(e) => setColumnColors((prev) => ({ ...prev, [header]: e.target.value }))}
                                     value={columnColors[header] || '#ffffff'}
                                 />
-                                <button onClick={() => moveColumn(header, 'left')}>←</button>
-                                <button onClick={() => moveColumn(header, 'right')}>→</button>
                             </div>
                         ))}
                     </div>
@@ -189,52 +180,44 @@ const TableManager: React.FC = () => {
                     <table style={{ borderCollapse: 'collapse', width: '100%' }}>
                         <thead>
                             <tr>
-                                {headers.map(
-                                    (header) =>
-                                        !hiddenColumns.includes(header) && (
-                                            <th
-                                                key={header}
-                                                style={{
-                                                    border: '1px solid #ddd',
-                                                    padding: '8px',
-                                                    textAlign: 'left',
-                                                    backgroundColor: columnColors[header] || 'transparent',
-                                                }}
-                                            >
-                                                {header}
-                                            </th>
-                                        )
-                                )}
+                                {headers.map((header) => (
+                                    <th
+                                        key={header}
+                                        style={{
+                                            border: '1px solid #ddd',
+                                            padding: '8px',
+                                            textAlign: 'left',
+                                            backgroundColor: columnColors[header] || 'transparent',
+                                        }}
+                                    >
+                                        {header}
+                                    </th>
+                                ))}
                             </tr>
                         </thead>
                         <tbody>
                             {data.map((row, rowIndex) => (
                                 <tr key={rowIndex}>
-                                    {headers.map(
-                                        (header) =>
-                                            !hiddenColumns.includes(header) && (
-                                                <td
-                                                    key={header}
-                                                    style={{
-                                                        border: '1px solid #ddd',
-                                                        padding: '8px',
-                                                        backgroundColor: columnColors[header] || 'transparent',
-                                                    }}
-                                                >
-                                                    <input
-                                                        type="text"
-                                                        value={row[header] || ''}
-                                                        onChange={(e) =>
-                                                            setData((prev) => {
-                                                                const newData = [...prev];
-                                                                newData[rowIndex][header] = e.target.value;
-                                                                return newData;
-                                                            })
-                                                        }
-                                                    />
-                                                </td>
-                                            )
-                                    )}
+                                    {headers.map((header) => (
+                                        <td
+                                            key={header}
+                                            style={{
+                                                border: '1px solid #ddd',
+                                                padding: '8px',
+                                                backgroundColor: columnColors[header] || 'transparent',
+                                            }}
+                                        >
+                                            <input
+                                                type="text"
+                                                value={row[header] || ''}
+                                                onChange={(e) => {
+                                                    const newData = [...data];
+                                                    newData[rowIndex][header] = e.target.value;
+                                                    setData(newData);
+                                                }}
+                                            />
+                                        </td>
+                                    ))}
                                 </tr>
                             ))}
                         </tbody>
