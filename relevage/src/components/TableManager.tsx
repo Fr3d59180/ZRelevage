@@ -119,14 +119,7 @@ const TableManager: React.FC = () => {
                 {selectedSheet && (
                     <button
                         onClick={() => setShowSheets((prev) => !prev)}
-                        /// style={{
-                        //     padding: '10px 20px',
-                        //     backgroundColor: '#007BFF',
-                        //     color: 'white',
-                        //     border: 'none',
-                        //     borderRadius: '5px',
-                        //     cursor: 'pointer',
-                        // }}
+
                     >
                         {showSheets ? 'Masquer les feuilles' : 'Afficher les feuilles'}
                     </button>
@@ -134,14 +127,7 @@ const TableManager: React.FC = () => {
                 {selectedSheet && (
                     <button
                         onClick={() => setShowColumnActions((prev) => !prev)}
-                        // style={{
-                        //     padding: '10px 20px',
-                        //     backgroundColor: '#007BFF',
-                        //     color: 'white',
-                        //     border: 'none',
-                        //     borderRadius: '5px',
-                        //     cursor: 'pointer',
-                        // }}
+
                     >
                         {showColumnActions ? 'Masquer les actions' : 'Afficher les actions'}
                     </button>
@@ -156,15 +142,7 @@ const TableManager: React.FC = () => {
                             <button
                                 key={sheetName}
                                 onClick={() => handleSheetSelect(sheetName)}
-                                // style={{
-                                //     padding: '10px 20px',
-                                //     backgroundColor: '#007BFF',
-                                //     color: 'white',
-                                //     border: 'none',
-                                //     borderRadius: '5px',
-                                //     cursor: 'pointer',
-                                //     whiteSpace: 'nowrap',
-                                // }}
+
                             >
                                 {sheetName}
                             </button>
@@ -187,14 +165,7 @@ const TableManager: React.FC = () => {
                                 />
                                 <button
                                     onClick={() => toggleColumnVisibility(header)}
-                                    // style={{
-                                    //     padding: '10px 20px',
-                                    //     backgroundColor: '#007BFF',
-                                    //     color: 'white',
-                                    //     border: 'none',
-                                    //     borderRadius: '5px',
-                                    //     cursor: 'pointer',
-                                    // }}
+
                                 >
                                     {hiddenColumns.includes(header) ? 'Afficher' : 'Masquer'}
                                 </button>
@@ -203,19 +174,7 @@ const TableManager: React.FC = () => {
                                     onChange={(e) => setColumnColors((prev) => ({ ...prev, [header]: e.target.value }))}
                                     value={columnColors[header] || '#ffffff'}
                                 />
-{/*                                <button
-                                    onClick={() => toggleColumnSortOrder(header)}
-                                    // style={{
-                                    //     padding: '10px 20px',
-                                    //     backgroundColor: '#007BFF',
-                                    //     color: 'white',
-                                    //     border: 'none',
-                                    //     borderRadius: '5px',
-                                    //     cursor: 'pointer',
-                                    // }}
-                                >
-                                    {columnSortOrder[header] === 'asc' ? 'Trier décroissant' : 'Trier croissant'}
-                                </button> */}
+
                             </div>
                         ))}
                     </div>
@@ -244,14 +203,7 @@ const TableManager: React.FC = () => {
                                                     {header}
                                                     <button
                                                         onClick={() => toggleColumnSortOrder(header)}
-                                                        style={{
-                                                            padding: '5px',
-                                                            backgroundColor: '#007BFF',
-                                                            color: 'white',
-                                                            border: 'none',
-                                                            borderRadius: '3px',
-                                                            cursor: 'pointer',
-                                                        }}
+
                                                     >
                                                         {columnSortOrder[header] === 'asc' ? '↓' : '↑'}
                                                     </button>
